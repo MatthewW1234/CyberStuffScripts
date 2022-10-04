@@ -1,0 +1,3 @@
+read -p "1. set updates in GUI"
+read -p "2. mount /tmp seperatly https://computingforgeeks.com/mount-tmp-on-a-separate-partition-in-linux/"
+read -p "3. "

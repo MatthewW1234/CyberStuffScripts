@@ -1,0 +1,75 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+
+rm /var/lib/dpkg/lock
+apt-get install bind9 bind9utils bind9-doc
+/etc/init.d/bind9 restart
+service bind9 reload
+
+host localhost
+read -p "just do this one manually replaceline will probably break it"
+touch /etc/bind/named.conf.default-zones
+
+replaceline /etc/bind/named.conf.options "directory " "directory "/var/cache/bind";"
+replaceline /etc/bind/named.conf.options "query-source " "query-source address * port *;"
+replaceline /etc/bind/named.conf.options "forward " " forward only;"
+replaceline /etc/bind/named.conf.options "forwarders " " forwarders { 192.168.1.1; };"
+replaceline /etc/bind/named.conf.options "auth-nxdomain " " auth-nxdomain no;"
+replaceline /etc/bind/named.conf.options "interface-interval " " interface-interval 0;"
+replaceline /etc/bind/named.conf.options "listen-on-v6 " "listen-on-v6 { none; };"
+replaceline /etc/bind/named.conf.options "listen-on " "listen-on { 127.0.0.1; 192.168.0.1; };
+replaceline /etc/bind/named.conf.options "allow-transfer " " allow-transfer { none; };"
+replaceline /etc/bind/named.conf.options "allow-query " "allow-query { internals; };"
+replaceline /etc/bind/named.conf.options "allow-recursion " "allow-recursion { internals; };"
+replaceline /etc/bind/named.conf.options "version " "version none;"
+
+replaceline /etc/bind/named.conf.local "include " "include "/etc/bind/named.conf.log";"
+replaceline /etc/bind/named.conf.local "zone " "zone "example.com" {"
+replaceline /etc/bind/named.conf.local "type " "type master;"
+replaceline /etc/bind/named.conf.local "file " " file "/var/lib/bind/db.example.com";"
+replaceline /etc/bind/named.conf.local "//forwarders " " //forwarders {};"
+replaceline /etc/bind/named.conf.local "//allow-update " "//allow-update { key ns-example-com_rndc-key; };"
+replaceline /etc/bind/named.conf.local "allow-update " "allow-update { key rndc-key; };"
+replaceline /etc/bind/named.conf.local "zone " "zone "0.168.192.in-addr.arpa" {"
+replaceline /etc/bind/named.conf.local "type " "type master;"
+replaceline /etc/bind/named.conf.local "file " "file "/var/lib/bind/db.example.com.inv";"
+replaceline /etc/bind/named.conf.local "//forwarders " "//forwarders {};"
+replaceline /etc/bind/named.conf.local "//allow-update { key ns-example-com_rndc-key; };" "//allow-update { key ns-example-com_rndc-key; };"
+replaceline /etc/bind/named.conf.local "allow-update " "allow-update { key rndc-key; };"
+replaceline /etc/bind/named.conf.local "include " "include "/etc/bind/zones.rfc1918";"
+
+replaceline /etc/bind/named.conf "acl internals " "acl internals { 127.0.0.0/8; 192.168.0.0/24; };"
+replaceline /etc/bind/named.conf "include " "include "/etc/bind/named.conf.options";"
+replaceline /etc/bind/named.conf "
+replaceline /etc/bind/named.conf "
+replaceline /etc/bind/named.conf "
+replaceline /etc/bind/named.conf "
+replaceline /etc/bind/named.conf "
+
+
+sysctl -w net.netfilter.nf_conntrack_udp_timeout=10
+
+/etc/init.d/bind9 restart
+service bind9 reload
+read -p "you probably broke the script so go over everything manually"

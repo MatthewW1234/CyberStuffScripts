@@ -1,0 +1,44 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+
+
+apt-get install mysql-server
+sudo mysql_secure_installation
+
+gedit /etc/mysql/mysql.conf.d/mysqld.cnf
+
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "bind-address" "bind-address = 127.0.0.1."
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "local-infile" "local-infile = 0"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "log" "log = /var/log/mysql-logfile
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "port" "port = 8083"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "default_password_lifetime" "default_password_lifetime = 30"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "require_secure_transport" "require_secure_transport = ON"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "safe-user-create" "safe-user-create = 1"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "secure-auth" "secure-auth = 1"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "secure-file-priv" "secure-file-priv = /tmp"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "slow_query_log" "slow_query_log = 1"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "port" "port = 3306"
+replaceline /etc/mysql/mysql.conf.d/mysqld.cnf "validate_password_length" "validate_password_length = 14"
+
+gedit /etc/mysql/mysql.conf.d/mysqld.cnf

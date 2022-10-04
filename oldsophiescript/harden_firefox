@@ -1,0 +1,2 @@
+read -p "go to about:config"
+read -p "privacy.resist.Fingerprinting to false"

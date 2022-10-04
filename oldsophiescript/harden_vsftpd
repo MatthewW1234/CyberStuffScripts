@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+
+apt-get install vsftpd
+
+replaceline /etc/vsftpd.conf "xferlog_std_format" "xferlog_std_format=NO"
+replaceline /etc/vsftpd.conf "local_umask" "local_umask=077"
+replaceline /etc/vsftpd.conf "listen" "listen=YES"
+replaceline /etc/vsftpd.conf "write_enable" "write_enable=YES"
+replaceline /etc/vsftpd.conf "ssl_tlsv1" "ssl_tlsv1=YES"
+replaceline /etc/vsftpd.conf "chroot_local_user" "chroot_local_user=YES"
+replaceline /etc/vsftpd.conf "virtual_use_local_privs" "virtual_use_local_privs=NO"
+replaceline /etc/vsftpd.conf "max_clients" "max_clients=0"
+replaceline /etc/vsftpd.conf "xferlog_enable" "xferlog_enable=YES"
+replaceline /etc/vsftpd.conf "ssl_sslv2" "ssl_sslv2=NO"
+replaceline /etc/vsftpd.conf "listen_ipv6" "listen_ipv6=NO"
+replaceline /etc/vsftpd.conf "log_ftp_protocol=" "log_ftp_protocol=YES"
+replaceline /etc/vsftpd.conf "ssl_sslv3=" "ssl_sslv3=NO"
+replaceline /etc/vsftpd.conf "no_anon_password=" "no_anon_password=NO"
+replaceline /etc/vsftpd.conf "anonymous_enable=" "anonymous_enable=NO"

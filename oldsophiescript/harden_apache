@@ -1,0 +1,84 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+
+sudo apt-get install apache2
+sudo systemctl enable apache2.service
+sudo systemctl start apache2.service
+apt-get install lib-apache2-modsecurity2
+mv /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+
+read -p "look for MaxKeepAliveRequests"
+gedit /etc/apache2/apache2.conf
+
+replaceline /etc/modsecurity/modsecurity.conf "SecRuleEngine" "SecRuleEngine On"
+replaceline /etc/modsecurity/modsecurity.conf "SecRequestBodyInMemonyLimit" "SecRequestBodyInMemonyLimit 1638400"
+replaceline /etc/modsecurity/modsecurity.conf "SecResponseBodyAccess" "SecResponseBodyAccess Off"
+replaceline /etc/apache2/apache2.conf "MaxKeepAliveRequests" "MaxKeepAliveRequests 100"
+replaceline /etc/apache2/apache2.conf "LimitRequestLine" "LimitRequestLine 8190"
+replaceline /etc/apache2/apache2.conf "Require" "Require all denied"
+replaceline /etc/apache2/apache2.conf "KeepAliveTimeout" "KeepAliveTimeout 3"
+replaceline /etc/apache2/apache2.conf "TraceEnable" "TraceEnable Off"
+replaceline /etc/apache2/apache2.conf "ServerTokens" "ServerTokens Prod"
+replaceline /etc/apache2/apache2.conf "ServerSignature" "ServerSignature Off"
+replaceline /etc/apache2/apache2.conf "FileETag " "FileETag None"
+replaceline /etc/apache2/apache2.conf "Keepalive" "Keepalive On"
+replaceline /etc/apache2/apache2.conf "Timeout" "Timeout 100"
+
+read -p "look for MaxKeepAliveRequests"
+gedit /etc/apache2/apache2.conf
+
+replaceline /etc/apache2/conf-available/security/conf "Signatureserver" "Signatureserver off"
+replaceline /etc/apache2/conf-available/security/conf "Signaturetokens" "Signaturetokens prod'
+ 
+gedit /etc/apache2/apache2.conf 
+
+rm /etc/init/control-alt-delete.override  "'exec /usr/bin/logger -p security.info Ctrl-Alt-Delete pressed"
+rm /usr/bin/sshd 
+rm /etc/init.d/sshd
+rm /etc/cron.weekly/popularity-contest
+removeline /etc/apache2/envvars "export APACHE_RUN_USER=games"
+
+replaceline /etc/php/7.0/apache2/php.ini "log_errors" "log_errors on"
+replaceline /etc/php/7.0/apache2/php.ini "expose_php" "expose_php off"
+removeline /etc/sudoers.d/README "/usr/bin/sshd"
+
+removeline /etc/audit/audit.rules "-a always,exit -F arch=b64 path=/usr/lib/openssh/ssh-keysign -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged-ssh"
+replaceline /etc/apache2/apache2.conf "FileETag" "FileETag None"
+
+replaceline /etc/php/7.0/apache2/php.ini "expose_php" "expose_php = Off"
+replaceline /etc/php/7.0/apache2/php.ini "log_errors" "log_errors = On"
+
+rm /var/www/html/info.php
+
+chmod 644 /etc/apache2/apache2.conf
+
+chown root /etc/apache2/apache2.conf
+
+replaceline /etc/bluetooth/main.conf InitiallyPowered "InitiallyPowered = false"
+
+addline /~/.htaccess "Header unset ETag"
+addline /~/.htaccess "FileETag None"
+
+replaceline /etc/apache2/mods-enabled/ssl.conf "SSLProtocol " "SSLProtocol -all +TLSv1 +TLSv1.1 +TLSv1.2"
+a2enmod ssl

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+replaceline /etc/sysctl.conf "vm.swappiness" "vm.swappiness = 10"
+replaceline /etc/sysctl.conf "#kernel.printk" "kernel.printk = 3 4 1 3"
+replaceline /etc/sysctl.conf "net.ipv4.ip_forward" "net.ipv4.ip_forward = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.rp_filter" "net.ipv4.conf.all.rp_filter = 1"
+replaceline /etc/sysctl.conf "net.ipv4.conf.default.rp_filter" "net.ipv4.conf.default.rp_filter = 1"
+replaceline /etc/sysctl.conf "net.ipv4.icmp_echo_ignore_broadcasts" "net.ipv4.icmp_echo_ignore_broadcasts = 1"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.accept_source_route" "net.ipv4.conf.all.accept_source_route = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.all.accept_source_route" "net.ipv6.conf.all.accept_source_route = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.default.accept_source_route" "net.ipv4.conf.default.accept_source_route = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.accept_source_route" "net.ipv6.conf.default.accept_source_route = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.send_redirects" "net.ipv4.conf.all.send_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.default.send_redirects" "net.ipv4.conf.default.send_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv4.tcp_syncookies" "net.ipv4.tcp_syncookies = 1"
+replaceline /etc/sysctl.conf "net.ipv4.tcp_max_syn_backlog" "net.ipv4.tcp_max_syn_backlog = 2048"
+replaceline /etc/sysctl.conf "net.ipv4.tcp_synack_retries" "net.ipv4.tcp_synack_retries = 2"
+replaceline /etc/sysctl.conf "net.ipv4.tcp_syn_retries" "net.ipv4.tcp_syn_retries = 5"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.log_martians" "net.ipv4.conf.all.log_martians = 1"
+replaceline /etc/sysctl.conf "net.ipv4.icmp_ignore_bogus_error_responses" "net.ipv4.icmp_ignore_bogus_error_responses = 1"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.accept_redirects" "net.ipv4.conf.all.accept_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.all.accept_redirects" "net.ipv6.conf.all.accept_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.default.accept_redirects" "net.ipv4.conf.default.accept_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.accept_redirects" "net.ipv6.conf.default.accept_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv4.icmp_echo_ignore_all" "net.ipv4.icmp_echo_ignore_all = 1"
+replaceline /etc/sysctl.conf "net.ipv4.conf.all.secure_redirects" "net.ipv4.conf.all.secure_redirects = 0"
+replaceline /etc/sysctl.conf "net.ipv4.conf.default.secure_redirects" "net.ipv4.conf.default.secure_redirects = 0"
+replaceline /etc/sysctl.conf "kernel.exec-shield" "kernel.exec-shield = 1"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.router_solicitations" "net.ipv6.conf.default.router_solicitations = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.accept_ra_rtr_pref" "net.ipv6.conf.default.accept_ra_rtr_pref = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.accept_ra_pinfo" "net.ipv6.conf.default.accept_ra_pinfo = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.accept_ra_defrtr" "net.ipv6.conf.default.accept_ra_defrtr = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.autoconf" "net.ipv6.conf.default.autoconf = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.dad_transmits" "net.ipv6.conf.default.dad_transmits = 0"
+replaceline /etc/sysctl.conf "net.ipv6.conf.default.max_addresses" "net.ipv6.conf.default.max_addresses = 1"
+replaceline /etc/sysctl.conf "kernel.randomize_va_space" "kernel.randomize_va_space = 2"
+replaceline /etc/sysctl.conf "kernel.ctrl-alt-del" "kernel.ctrl-alt-del = 0"
+
+addline /etc/init/control-alt-delete.override "exec /usr/bin/logger -p security.info "Ctrl-Alt-Delete pressed""
+
+sysctl -p

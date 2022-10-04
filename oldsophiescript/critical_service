@@ -1,0 +1,8 @@
+echo mysql
+echo bind9
+echo samba
+echo apache
+echo maria
+echo vsftpd
+echo ssh
+echo openssh-server

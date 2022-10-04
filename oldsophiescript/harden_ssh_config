@@ -1,0 +1,67 @@
+#!/bin/bash
+
+function replaceline {
+    echo "============================ replace(or add) $3 in $1"
+    if grep -qF "$2" $1;then
+        echo "pattern [$2] found and replaced by [$3]"
+        sed -i "/${2}/c $3" $1
+    else
+        echo "pattern [$2] not found. [$3] added"
+        echo "$3" >> $1
+    fi
+}
+
+function addline {
+    echo "============================ add $2 in $1"
+    echo $2 >> $1
+}
+
+function removeline {
+    echo "============================ remove lines with $2 in $1"
+    fgrep -v $2 $1 > $1.tmp
+    mv $1.tmp $1
+}
+
+replaceline /etc/ssh/sshd_config "PermitRootLogin" "PermitRootLogin no"
+replaceline /etc/ssh/sshd_config "Port" "Port 22"
+replaceline /etc/ssh/sshd_config "UsePam" "UsePam no"
+replaceline /etc/ssh/sshd_config "PasswordAuthentication" "PasswordAuthentication no"
+replaceline /etc/ssh/sshd_config "ChallengeResponseAuthentication" "ChallengeResponseAuthentication no"
+replaceline /etc/ssh/sshd_config "MaxAuthTries" "MaxAuthTries 3"
+replaceline /etc/ssh/sshd_config "Protocol" "Protocol 2"
+replaceline /etc/ssh/sshd_config "LogLevel" "LogLevel VERBOSE"
+replaceline /etc/ssh/sshd_config "PrintLastLog" "PrintLastLog yes"
+replaceline /etc/ssh/sshd_config "HostBasedAuthentication" "HostBasedAuthentication no"
+replaceline /etc/ssh/sshd_config "ClientAliveInterval" "ClientAliveInterval 300"
+replaceline /etc/ssh/sshd_config "UseDNS" "UseDNS yes"
+replaceline /etc/ssh/sshd_config "X11Forwarding" "X11Forwarding no"
+replaceline /etc/ssh/sshd_config "StrictModes" "StrictModes yes"
+replaceline /etc/ssh/sshd_config "PermitEmptyPasswords" "PermitEmptyPasswords no"
+replaceline /etc/ssh/sshd_config "RhostsRSAAuthentication" "RhostsRSAAuthentication no"
+replaceline /etc/ssh/sshd_config "Compression" "Compression no"
+replaceline /etc/ssh/sshd_config "IgnoreRhosts" "IgnoreRhosts yes"
+replaceline /etc/ssh/sshd_config "MaxStartups 2:30:10" "MaxStartups 2:30:10"
+replaceline /etc/ssh/sshd_config "AllowTcpForwarding" "AllowTcpForwarding no"
+replaceline /etc/ssh/sshd_config "PermitUserEnvironment" "PermitUserEnvironment no"
+replaceline /etc/ssh/sshd_config "ClientAliveCountMax" "ClientAliveCountMax 0"
+replaceline /etc/ssh/sshd_config "Banner" "Banner /etc/issue.net"
+replaceline /etc/ssh/sshd_config "ChallengeResponseAuthentication" "ChallengeResponseAuthentication no"
+replaceline /etc/ssh/sshd_config "LoginGraceTime" "LoginGraceTime 300"
+replaceline /etc/ssh/sshd_config "SyslogFacility" "SyslogFacility AUTH"
+replaceline /etc/ssh/sshd_config "ServerKeyBits" "ServerKeyBits 1024"
+replaceline /etc/ssh/sshd_config "UsePrivilegeSeparation" "UsePrivilegeSeparation yes"
+replaceline /etc/ssh/sshd_config "AllowTcpForwarding" "AllowTcpForwarding yes"
+replaceline /etc/ssh/sshd_config "RSAAuthentication" "RSAAuthentication yes"
+replaceline /etc/ssh/sshd_config "PubkeyAuthentication" "PubkeyAuthentication yes"
+replaceline /etc/ssh/sshd_config "AuthorizedKeysFile" "AuthorizedKeysFile .ssh/authorized_keys"
+replaceline /etc/ssh/sshd_config "AuthenticationMethods" "AuthenticationMethods publickey"
+replaceline /etc/ssh/sshd_config "FingerprintHash" "FingerprintHash sha512"
+replaceline /etc/ssh/sshd_config "KexAlgorithms " "KexAlgorithms ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256"
+replaceline /etc/ssh/sshd_config "Ciphers " "Ciphers aes128-ctr,aes192-ctr,aes256-ctr"
+replaceline /etc/ssh/sshd_config "HostKeyAlgorithms " "HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,ssh-dss"
+replaceline /etc/ssh/sshd_config "MACs " "MACs hmac-sha2-256,hmac-sha2-512,hmac-sha1"
+
+#addline /etc/ssh/ssh_config "effghrr 3333333"
+#removeline /etc/ssh/ssh_config Port
+removeline /etc/ssh/sshd_config "blowfish-cbc"
+removeline /etc/ssh/sshd_config "AllowUsers"

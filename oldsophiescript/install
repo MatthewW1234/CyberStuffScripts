@@ -1,0 +1,21 @@
+ read -p "Press enter key to install"
+ rm /var/lib/dpkg/lock
+    apt-get -V install clamav clamav-server clamav-data clamav-update clamav-filesystem clamav clamav-scanner-systemd clamav-devel clamav-lib clamav-server-systemd
+    apt-get -V install libapache2-mod-evasive
+    apt-get -V install libpam-cracklib antivirus
+    apt-get -V install fail2ban apparmor
+    apt-get -V install libapache2-mod-qos
+    apt-get -V install auditd rkhunter
+    apt-get -V install aide apport
+    apt-get -V install audispd-plugins libapache2-modsecurity
+    apt-get -V install apparmor-profiles psad
+    apt-get -V install chkroot libapache2-mod-spamhaus
+    apt-get -V install libpam-google-authenticator debsums
+    apt-get -V install debsecan php-apc 
+    apt-get -V install php7 apport libchicken-dev
+    apt-get -V install sl passwd passwdqc
+    
+    apt-get update
+    apt-get upgrade
+    apt-get dist-upgrade
+    restart

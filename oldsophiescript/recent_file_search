@@ -1,0 +1,10 @@
+echo "======================================= recently modified files in /home directory($1 days)=============="
+find /home/ -type f -mtime -$1 -exec ls -l {} \;
+echo "======================================= recently modified files in /etc directory($1 days)=============="
+find /etc/ -type f -mtime -$1 -exec ls -l {} \;
+echo "======================================= recently modified files in /bin directory($1 days)=============="
+find /bin/ -type f -mtime -$1 -exec ls -l {} \;
+echo "======================================= recently modified files in /var directory($1 days)=============="
+find /var/ -type f -mtime -$1 -exec ls -l {} \;
+echo "======================================= recently modified files in /usr directory($1 days)=============="
+find /usr/ -type f -mtime -$1 -exec ls -l {} \;

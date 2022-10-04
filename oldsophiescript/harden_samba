@@ -1,0 +1,5 @@
+echo "go to /etc/samba/smb.conf"
+echo "under [global]"
+echo "client signing = mandatory  - sign communications"
+echo "restrict anonymous = 2    - no guests"
+echo "tls = yes   - uses tls encryption"
